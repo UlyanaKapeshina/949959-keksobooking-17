@@ -1,7 +1,8 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ульяна Капешина](https://up.htmlacademy.ru/javascript/17/user/949959).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Балесный](https://htmlacademy.ru/profile/id221665).
+
 
 ---
 
