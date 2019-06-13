@@ -21,26 +21,25 @@ var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-var getAds = function(types, minX, maxX, minY, maxY) {
+var getAds = function (types, minX, maxX, minY, maxY) {
   var ads = [];
   for (var i = 0; i < 8; i++) {
     ads[i] = {
       author: {avatar: 'img/avatars/user0' + (i + 1) + '.png'},
       offer: {type: getRandomElement(types)},
       location: {x: getRandomInt(minX, maxX), y: getRandomInt(minY, maxY)}
-    }
-    console.log(ads[i])
+    };
   }
   return ads;
-}
+};
 
-var ads = getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y);
+var adsData = getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y);
 
 map.classList.remove('map--faded');
 
-var renderPin = function(ad) {
+var renderPin = function (ad) {
   var pinElement = similarPinTemplate.cloneNode(true);
-  pinElement.style = 'left:' + (ad.location.x  - PIN_WIDTH/2) + 'px; top:' + (ad.location.y - PIN_HEIGHT)+ 'px';
+  pinElement.style = 'left:' + (ad.location.x - PIN_WIDTH / 2) + 'px; top:' + (ad.location.y - PIN_HEIGHT) + 'px';
   pinElement.querySelector('img').src = ad.author.avatar;
   pinElement.querySelector('img').alt = ad.offer.type;
 
@@ -53,8 +52,6 @@ var renderPins = function (ads) {
     fragment.appendChild(renderPin(ads[i]));
   }
   pinsListElement.appendChild(fragment);
-}
+};
 
-renderPins(ads);
-
-
+renderPins(adsData);
