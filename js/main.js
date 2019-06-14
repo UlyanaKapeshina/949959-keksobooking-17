@@ -1,5 +1,6 @@
 'use strict';
 
+var ADS_QUANTITY = 8;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var MIN_X = 0;
 var MAX_X = 1200;
@@ -11,11 +12,10 @@ var PIN_WIDTH = 50;
 
 var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinsListElement = document.querySelector('.map__pins');
-var map = document.querySelector('.map');
+var mapElement = document.querySelector('.map');
 
-var getRandomElement = function (arr) {
-  var rand = Math.floor(Math.random() * arr.length);
-  return arr[rand];
+var getRandomElement = function (array) {
+  return array[getRandomInt(0, array.length - 1)];
 };
 var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -23,7 +23,7 @@ var getRandomInt = function (min, max) {
 
 var getAds = function (types, minX, maxX, minY, maxY) {
   var ads = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < ADS_QUANTITY; i++) {
     ads[i] = {
       author: {avatar: 'img/avatars/user0' + (i + 1) + '.png'},
       offer: {type: getRandomElement(types)},
@@ -35,11 +35,11 @@ var getAds = function (types, minX, maxX, minY, maxY) {
 
 var adsData = getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y);
 
-map.classList.remove('map--faded');
+mapElement.classList.remove('map--faded');
 
 var renderPin = function (ad) {
   var pinElement = similarPinTemplate.cloneNode(true);
-  pinElement.style = 'left:' + (ad.location.x - PIN_WIDTH / 2) + 'px; top:' + (ad.location.y - PIN_HEIGHT) + 'px';
+  pinElement.setAttribute('style', 'left:' + (ad.location.x - PIN_WIDTH / 2) + 'px; top:' + (ad.location.y - PIN_HEIGHT) + 'px');
   pinElement.querySelector('img').src = ad.author.avatar;
   pinElement.querySelector('img').alt = ad.offer.type;
 
