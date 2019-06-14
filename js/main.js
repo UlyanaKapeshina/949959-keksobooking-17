@@ -39,7 +39,8 @@ mapElement.classList.remove('map--faded');
 
 var renderPin = function (ad) {
   var pinElement = similarPinTemplate.cloneNode(true);
-  pinElement.setAttribute('style', 'left:' + (ad.location.x - PIN_WIDTH / 2) + 'px; top:' + (ad.location.y - PIN_HEIGHT) + 'px');
+  pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
+  pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
   pinElement.querySelector('img').src = ad.author.avatar;
   pinElement.querySelector('img').alt = ad.offer.type;
 
