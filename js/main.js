@@ -65,28 +65,28 @@ var addressElement = adFormElement.querySelector('#address');
 
 var mainPinElement = document.querySelector(' .map__pin--main');
 
-var setDisabledAttribute = function (array) {
-  for (var i = 0; i < array.length; i++) {
-    array[i].disabled = true;
+var setDisabledAttribute = function (elements) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].disabled = true;
   }
 };
 setDisabledAttribute(adFieldsetElements);
 setDisabledAttribute(mapFieldsetElements);
 setDisabledAttribute(mapSelectElements);
 
-var removeDisabledAttribute = function (array) {
-  for (var i = 0; i < array.length; i++) {
-    array[i].disabled = false;
+var removeDisabledAttribute = function (elements) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].disabled = false;
   }
 };
 
-var getAddress = function () {
+var setAddress = function () {
   var pinX = parseInt(mainPinElement.style.left, 10) + Math.ceil(MAIN_PIN_WIDTH / 2);
   var pinY = parseInt(mainPinElement.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT / 2);
   addressElement.value = pinX + ', ' + pinY;
   addressElement.readOnly = true;
 };
-getAddress();
+setAddress();
 
 var onPinClick = function () {
   removeDisabledAttribute(adFieldsetElements);
@@ -94,10 +94,9 @@ var onPinClick = function () {
   removeDisabledAttribute(mapSelectElements);
   mapElement.classList.remove('map--faded');
   adFormElement.classList.remove('ad-form--disabled');
+  mainPinElement.removeEventListener('click', onPinClick);
   renderPins(adsData);
-  getAddress();
+  setAddress();
 };
 
-mainPinElement.addEventListener('click', function () {
-  onPinClick();
-});
+mainPinElement.addEventListener('click', onPinClick);
