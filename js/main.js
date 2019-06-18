@@ -85,7 +85,7 @@ var getAddress = function () {
   var pinY = parseInt(mainPinElement.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT / 2);
   addressElement.value = pinX + ', ' + pinY;
   addressElement.readOnly = true;
-}
+};
 getAddress();
 
 var onPinClick = function () {
