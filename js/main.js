@@ -9,6 +9,8 @@ var MAX_Y = 630;
 
 var PIN_HEIGHT = 70;
 var PIN_WIDTH = 50;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_WIDTH = 65;
 
 var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var pinsListElement = document.querySelector('.map__pins');
@@ -35,8 +37,6 @@ var getAds = function (types, minX, maxX, minY, maxY) {
 
 var adsData = getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y);
 
-mapElement.classList.remove('map--faded');
-
 var renderPin = function (ad) {
   var pinElement = similarPinTemplate.cloneNode(true);
   pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
@@ -55,4 +55,48 @@ var renderPins = function (ads) {
   pinsListElement.appendChild(fragment);
 };
 
-renderPins(adsData);
+
+var adFormElement = document.querySelector('.ad-form');
+var mapFiltersFormElement = document.querySelector('.map__filters');
+var adFieldsetElements = adFormElement.querySelectorAll('fieldset');
+var mapSelectElements = mapFiltersFormElement.querySelectorAll('select');
+var mapFieldsetElements = mapFiltersFormElement.querySelectorAll('fieldset');
+var addressElement = adFormElement.querySelector('#address');
+
+var mainPinElement = document.querySelector(' .map__pin--main');
+
+var setDisabledAttribute = function (elements) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].disabled = true;
+  }
+};
+setDisabledAttribute(adFieldsetElements);
+setDisabledAttribute(mapFieldsetElements);
+setDisabledAttribute(mapSelectElements);
+
+var removeDisabledAttribute = function (elements) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].disabled = false;
+  }
+};
+
+var setAddress = function () {
+  var pinX = parseInt(mainPinElement.style.left, 10) + Math.ceil(MAIN_PIN_WIDTH / 2);
+  var pinY = parseInt(mainPinElement.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT / 2);
+  addressElement.value = pinX + ', ' + pinY;
+  addressElement.readOnly = true;
+};
+setAddress();
+
+var onPinClick = function () {
+  removeDisabledAttribute(adFieldsetElements);
+  removeDisabledAttribute(mapFieldsetElements);
+  removeDisabledAttribute(mapSelectElements);
+  mapElement.classList.remove('map--faded');
+  adFormElement.classList.remove('ad-form--disabled');
+  mainPinElement.removeEventListener('click', onPinClick);
+  renderPins(adsData);
+  setAddress();
+};
+
+mainPinElement.addEventListener('click', onPinClick);
