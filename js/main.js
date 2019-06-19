@@ -107,6 +107,11 @@ var onResetClick = function () {
   timeInSelect.removeEventListener('click', onTimeSelectClick);
   timeOutSelect.removeEventListener('click', onTimeSelectClick);
   typeSelect.removeEventListener('click', onTypeSelectClick);
+  setDisabledAttribute(adFieldsets);
+  setDisabledAttribute(mapFieldsets);
+  setDisabledAttribute(mapSelects);
+  map.classList.add('map--faded');
+
 };
 
 mainPin.addEventListener('click', onPinClick);
@@ -117,7 +122,7 @@ var typeSelect = adForm.querySelector('#type');
 var timeInSelect = adForm.querySelector('#timein');
 var timeOutSelect = adForm.querySelector('#timeout');
 
-var prices = {
+var PRICES = {
   'bungalo': '0',
   'flat': '1000',
   'house': '5000',
@@ -125,8 +130,8 @@ var prices = {
 };
 
 var onTypeSelectClick = function (evt) {
-  priceInput.placeholder = prices[evt.target.value];
-  priceInput.min = prices[evt.target.value];
+  priceInput.placeholder = PRICES[evt.target.value];
+  priceInput.min = PRICES[evt.target.value];
 };
 
 var onTimeSelectClick = function (evt) {
