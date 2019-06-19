@@ -13,8 +13,8 @@ var MAIN_PIN_HEIGHT = 65;
 var MAIN_PIN_WIDTH = 65;
 
 var similarPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-var pinsListElement = document.querySelector('.map__pins');
-var mapElement = document.querySelector('.map');
+var pinsList = document.querySelector('.map__pins');
+var map = document.querySelector('.map');
 
 var getRandomElement = function (array) {
   return array[getRandomInt(0, array.length - 1)];
@@ -28,7 +28,7 @@ var getAds = function (types, minX, maxX, minY, maxY) {
   for (var i = 0; i < ADS_QUANTITY; i++) {
     ads[i] = {
       author: {avatar: 'img/avatars/user0' + (i + 1) + '.png'},
-      offer: {type: getRandomElement(types)},
+      offer: {typeSelect: getRandomElement(types)},
       location: {x: getRandomInt(minX, maxX), y: getRandomInt(minY, maxY)}
     };
   }
@@ -38,13 +38,13 @@ var getAds = function (types, minX, maxX, minY, maxY) {
 var adsData = getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y);
 
 var renderPin = function (ad) {
-  var pinElement = similarPinTemplate.cloneNode(true);
-  pinElement.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
-  pinElement.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
-  pinElement.querySelector('img').src = ad.author.avatar;
-  pinElement.querySelector('img').alt = ad.offer.type;
+  var pin = similarPinTemplate.cloneNode(true);
+  pin.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
+  pin.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
+  pin.querySelector('img').src = ad.author.avatar;
+  pin.querySelector('img').alt = ad.offer.typeSelect;
 
-  return pinElement;
+  return pin;
 };
 
 var renderPins = function (ads) {
@@ -52,27 +52,28 @@ var renderPins = function (ads) {
   for (var i = 0; i < ads.length; i++) {
     fragment.appendChild(renderPin(ads[i]));
   }
-  pinsListElement.appendChild(fragment);
+  pinsList.appendChild(fragment);
 };
 
 
-var adFormElement = document.querySelector('.ad-form');
-var mapFiltersFormElement = document.querySelector('.map__filters');
-var adFieldsetElements = adFormElement.querySelectorAll('fieldset');
-var mapSelectElements = mapFiltersFormElement.querySelectorAll('select');
-var mapFieldsetElements = mapFiltersFormElement.querySelectorAll('fieldset');
-var addressElement = adFormElement.querySelector('#address');
+var adForm = document.querySelector('.ad-form');
+var mapFiltersForm = document.querySelector('.map__filters');
+var adFieldsets = adForm.querySelectorAll('fieldset');
+var mapSelects = mapFiltersForm.querySelectorAll('select');
+var mapFieldsets = mapFiltersForm.querySelectorAll('fieldset');
+var address = adForm.querySelector('#address');
 
-var mainPinElement = document.querySelector(' .map__pin--main');
+var mainPin = document.querySelector(' .map__pin--main');
 
 var setDisabledAttribute = function (elements) {
   for (var i = 0; i < elements.length; i++) {
     elements[i].disabled = true;
   }
 };
-setDisabledAttribute(adFieldsetElements);
-setDisabledAttribute(mapFieldsetElements);
-setDisabledAttribute(mapSelectElements);
+
+setDisabledAttribute(adFieldsets);
+setDisabledAttribute(mapFieldsets);
+setDisabledAttribute(mapSelects);
 
 var removeDisabledAttribute = function (elements) {
   for (var i = 0; i < elements.length; i++) {
@@ -81,22 +82,60 @@ var removeDisabledAttribute = function (elements) {
 };
 
 var setAddress = function () {
-  var pinX = parseInt(mainPinElement.style.left, 10) + Math.ceil(MAIN_PIN_WIDTH / 2);
-  var pinY = parseInt(mainPinElement.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT / 2);
-  addressElement.value = pinX + ', ' + pinY;
-  addressElement.readOnly = true;
+  var pinX = parseInt(mainPin.style.left, 10) + Math.ceil(MAIN_PIN_WIDTH / 2);
+  var pinY = parseInt(mainPin.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT / 2);
+  address.value = pinX + ', ' + pinY;
 };
 setAddress();
 
 var onPinClick = function () {
-  removeDisabledAttribute(adFieldsetElements);
-  removeDisabledAttribute(mapFieldsetElements);
-  removeDisabledAttribute(mapSelectElements);
-  mapElement.classList.remove('map--faded');
-  adFormElement.classList.remove('ad-form--disabled');
-  mainPinElement.removeEventListener('click', onPinClick);
+  removeDisabledAttribute(adFieldsets);
+  removeDisabledAttribute(mapFieldsets);
+  removeDisabledAttribute(mapSelects);
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  mainPin.removeEventListener('click', onPinClick);
   renderPins(adsData);
   setAddress();
 };
 
-mainPinElement.addEventListener('click', onPinClick);
+mainPin.addEventListener('click', onPinClick);
+
+var priceInput = adForm.querySelector('#price');
+var typeSelect = adForm.querySelector('#type');
+var timeInSelect = adForm.querySelector('#timein');
+var timeOutSelect = adForm.querySelector('#timeout');
+
+var onTypeSelectClick = function (evt) {
+  if (evt.target.value === 'bungalo') {
+    priceInput.placeholder = '0';
+    priceInput.min = '0';
+  }
+  if (evt.target.value === 'flat') {
+    priceInput.placeholder = '1000';
+    priceInput.min = '1000';
+  }
+  if (evt.target.value === 'house') {
+    priceInput.placeholder = '5000';
+    priceInput.min = '5000';
+  }
+  if (evt.target.value === 'palace') {
+    priceInput.placeholder = '10000';
+    priceInput.min = '10000';
+  }
+};
+
+var onTimeSelectClick = function (evt) {
+  if (evt.target.value === '12:00') {
+    timeOutSelect.value = '12:00';
+  }
+  if (evt.target.value === '13:00') {
+    timeOutSelect.value = '13:00';
+  }
+  if (evt.target.value === '14:00') {
+    timeOutSelect.value = '14:00';
+  }
+};
+
+timeInSelect.addEventListener('click', onTimeSelectClick);
+typeSelect.addEventListener('click', onTypeSelectClick);
