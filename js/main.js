@@ -126,15 +126,7 @@ var onTypeSelectClick = function (evt) {
 };
 
 var onTimeSelectClick = function (evt) {
-  if (evt.target.value === '12:00') {
-    timeOutSelect.value = '12:00';
-  }
-  if (evt.target.value === '13:00') {
-    timeOutSelect.value = '13:00';
-  }
-  if (evt.target.value === '14:00') {
-    timeOutSelect.value = '14:00';
-  }
+  timeOutSelect.value = evt.target.value;
 };
 
 timeInSelect.addEventListener('click', onTimeSelectClick);
