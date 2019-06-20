@@ -58,7 +58,7 @@ var renderPins = function (ads) {
 
 var adForm = document.querySelector('.ad-form');
 var mapFiltersForm = document.querySelector('.map__filters');
-var adFieldsets = adForm.querySelectorAll('fieldset');
+var adFieldsets = adForm.querySelectorAll('input, select');
 var mapSelects = mapFiltersForm.querySelectorAll('select');
 var mapFieldsets = mapFiltersForm.querySelectorAll('fieldset');
 var address = adForm.querySelector('#address');
@@ -110,7 +110,10 @@ var onResetClick = function () {
   setDisabledAttribute(adFieldsets);
   setDisabledAttribute(mapFieldsets);
   setDisabledAttribute(mapSelects);
+  setAddress();
   map.classList.add('map--faded');
+  adForm.classList.add('ad-form--disabled');
+
 
 };
 
