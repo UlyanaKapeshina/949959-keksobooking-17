@@ -39,6 +39,7 @@ var adsData = getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y);
 
 var renderPin = function (ad) {
   var pin = similarPinTemplate.cloneNode(true);
+  pin.classList.add('pin');
   pin.style.left = (ad.location.x - PIN_WIDTH / 2) + 'px';
   pin.style.top = (ad.location.y - PIN_HEIGHT) + 'px';
   pin.querySelector('img').src = ad.author.avatar;
@@ -64,6 +65,8 @@ var mapFieldsets = mapFiltersForm.querySelectorAll('fieldset');
 var address = adForm.querySelector('#address');
 
 var mainPin = document.querySelector(' .map__pin--main');
+var pins = document.querySelectorAll('.map__pin');
+
 var resetButton = adForm.querySelector('.ad-form__reset');
 
 var setDisabledAttribute = function (elements) {
@@ -89,6 +92,12 @@ var setAddress = function () {
 };
 setAddress();
 
+var removeElements = function (elements) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].remove();
+  }
+};
+
 var onPinClick = function () {
   removeDisabledAttribute(adFieldsets);
   removeDisabledAttribute(mapFieldsets);
@@ -104,16 +113,16 @@ var onPinClick = function () {
 };
 
 var onResetClick = function () {
-  timeInSelect.removeEventListener('click', onTimeSelectClick);
-  timeOutSelect.removeEventListener('click', onTimeSelectClick);
-  typeSelect.removeEventListener('click', onTypeSelectClick);
-  setDisabledAttribute(adFieldsets);
-  setDisabledAttribute(mapFieldsets);
-  setDisabledAttribute(mapSelects);
-  setAddress();
-  map.classList.add('map--faded');
-  adForm.classList.add('ad-form--disabled');
-
+  // timeInSelect.removeEventListener('click', onTimeSelectClick);
+  // timeOutSelect.removeEventListener('click', onTimeSelectClick);
+  // typeSelect.removeEventListener('click', onTypeSelectClick);
+  // setDisabledAttribute(adFieldsets);
+  // setDisabledAttribute(mapFieldsets);
+  // setDisabledAttribute(mapSelects);
+  // setAddress();
+  // map.classList.add('map--faded');
+  // adForm.classList.add('ad-form--disabled');
+  removeElements(pins);
 
 };
 
