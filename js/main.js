@@ -97,8 +97,6 @@ var setAddress = function () {
 };
 setAddress();
 
-
-
 var onPinClick = function () {
   removeDisabledAttribute(adFieldsets);
   removeDisabledAttribute(mapFieldsets);
@@ -114,8 +112,7 @@ var onPinClick = function () {
   typeSelect.addEventListener('click', onTypeSelectClick);
 };
 
-var onResetClick = function (evt) {
-  // evt.preventDefault();
+var onResetClick = function () {
   timeInSelect.removeEventListener('click', onTimeSelectClick);
   timeOutSelect.removeEventListener('click', onTimeSelectClick);
   typeSelect.removeEventListener('click', onTypeSelectClick);
