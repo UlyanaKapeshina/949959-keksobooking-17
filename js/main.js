@@ -56,16 +56,21 @@ var renderPins = function (ads) {
   pinsList.appendChild(fragment);
 };
 
+var removeElements = function (elements) {
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].remove();
+  }
+};
 
 var adForm = document.querySelector('.ad-form');
 var mapFiltersForm = document.querySelector('.map__filters');
-var adFieldsets = adForm.querySelectorAll('input, select');
+var adFieldsets = adForm.querySelectorAll('fieldset');
 var mapSelects = mapFiltersForm.querySelectorAll('select');
 var mapFieldsets = mapFiltersForm.querySelectorAll('fieldset');
 var address = adForm.querySelector('#address');
 
 var mainPin = document.querySelector(' .map__pin--main');
-var pins = document.querySelectorAll('.map__pin');
+
 
 var resetButton = adForm.querySelector('.ad-form__reset');
 
@@ -92,11 +97,7 @@ var setAddress = function () {
 };
 setAddress();
 
-var removeElements = function (elements) {
-  for (var i = 0; i < elements.length; i++) {
-    elements[i].remove();
-  }
-};
+
 
 var onPinClick = function () {
   removeDisabledAttribute(adFieldsets);
@@ -106,23 +107,28 @@ var onPinClick = function () {
   adForm.classList.remove('ad-form--disabled');
   mainPin.removeEventListener('click', onPinClick);
   renderPins(adsData);
+
   setAddress();
   timeInSelect.addEventListener('click', onTimeSelectClick);
   timeOutSelect.addEventListener('click', onTimeSelectClick);
   typeSelect.addEventListener('click', onTypeSelectClick);
 };
 
-var onResetClick = function () {
-  // timeInSelect.removeEventListener('click', onTimeSelectClick);
-  // timeOutSelect.removeEventListener('click', onTimeSelectClick);
-  // typeSelect.removeEventListener('click', onTypeSelectClick);
-  // setDisabledAttribute(adFieldsets);
-  // setDisabledAttribute(mapFieldsets);
-  // setDisabledAttribute(mapSelects);
-  // setAddress();
-  // map.classList.add('map--faded');
-  // adForm.classList.add('ad-form--disabled');
-  removeElements(pins);
+var onResetClick = function (evt) {
+  // evt.preventDefault();
+  timeInSelect.removeEventListener('click', onTimeSelectClick);
+  timeOutSelect.removeEventListener('click', onTimeSelectClick);
+  typeSelect.removeEventListener('click', onTypeSelectClick);
+  adForm.reset();
+  setAddress();
+  setDisabledAttribute(adFieldsets);
+  setDisabledAttribute(mapFieldsets);
+  setDisabledAttribute(mapSelects);
+
+  map.classList.add('map--faded');
+  adForm.classList.add('ad-form--disabled');
+  mainPin.addEventListener('click', onPinClick);
+  removeElements(document.querySelectorAll('.pin'));
 
 };
 
