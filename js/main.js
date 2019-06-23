@@ -133,7 +133,6 @@ var onResetClick = function () {
 
   map.classList.add('map--faded');
   adForm.classList.add('ad-form--disabled');
-  mainPin.addEventListener('click', activateMap);
   removeElements(document.querySelectorAll('.pin'));
 
 };
@@ -165,7 +164,6 @@ var defaultCoords = {
 
 mainPin.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
-  activateMap();
 
   var startCoords = {
     x: evt.clientX,
@@ -189,16 +187,17 @@ mainPin.addEventListener('mousedown', function (evt) {
     var mainPinY = mainPin.offsetTop - shift.y;
     var mainPinX = mainPin.offsetLeft - shift.x;
 
-    if (mainPinY < MAX_Y && mainPinY > MIN_Y) {
+    if (mainPinY < MAX_Y && mainPinY > MIN_Y - MAIN_PIN_HEIGHT) {
       mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
     }
-    if (mainPinX < MAX_X && mainPinX > MIN_X) {
+    if (mainPinX < (MAX_X - MAIN_PIN_WIDTH) && mainPinX > MIN_X) {
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
     }
   };
 
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
+    activateMap();
     setAddress();
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
