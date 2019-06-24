@@ -24,6 +24,26 @@ var similarPinTemplate = document.querySelector('#pin').content.querySelector('.
 var pinsList = document.querySelector('.map__pins');
 var map = document.querySelector('.map');
 
+var getRandomElement = function (array) {
+  return array[getRandomInt(0, array.length - 1)];
+};
+var getRandomInt = function (min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var getAds = function (types, minX, maxX, minY, maxY) {
+  var ads = [];
+  for (var i = 0; i < ADS_QUANTITY; i++) {
+    ads[i] = {
+      author: {avatar: 'img/avatars/user0' + (i + 1) + '.png'},
+      offer: {typeSelect: getRandomElement(types)},
+      location: {x: getRandomInt(minX, maxX), y: getRandomInt(minY, maxY)}
+    };
+  }
+  return ads;
+};
+
+var adsData = getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y);
 
 var renderPin = function (ad) {
   var pin = similarPinTemplate.cloneNode(true);
@@ -93,7 +113,7 @@ var activateMap = function () {
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
   mainPin.removeEventListener('click', activateMap);
-  renderPins(window.data);
+  renderPins(adsData);
   timeInSelect.addEventListener('click', onTimeSelectClick);
   timeOutSelect.addEventListener('click', onTimeSelectClick);
   typeSelect.addEventListener('click', onTypeSelectClick);

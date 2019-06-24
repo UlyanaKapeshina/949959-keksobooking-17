@@ -14,6 +14,8 @@ var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+// создание массива объявлений
+
 var getAds = function (types, minX, maxX, minY, maxY) {
   var ads = [];
   for (var i = 0; i < ADS_QUANTITY; i++) {
@@ -26,6 +28,8 @@ var getAds = function (types, minX, maxX, minY, maxY) {
   return ads;
 };
 
-window.data = getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y);
+window.data = {
+  getAds: getAds(TYPES, MIN_X, MAX_X, MIN_Y, MAX_Y)
+};
 
 
