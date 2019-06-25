@@ -45,9 +45,12 @@
     window.form.setAddress();
     map.classList.remove('map--faded');
     renderPins(window.data.getAds);
+    dragged = true;
   };
 
   // перемещения пина
+
+  var dragged = false;
 
   mainPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -60,6 +63,7 @@
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
       window.form.setAddress();
+
 
       var shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -83,9 +87,13 @@
     };
 
     var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-      activatePage();
-      window.form.setAddress();
+
+      if (!dragged) {
+        upEvt.preventDefault();
+        activatePage();
+        window.form.setAddress();
+      }
+
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
