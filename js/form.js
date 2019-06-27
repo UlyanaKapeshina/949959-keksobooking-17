@@ -11,6 +11,7 @@
   var adForm = document.querySelector('.ad-form');
   var mapFiltersForm = document.querySelector('.map__filters');
   var adFieldsets = adForm.querySelectorAll('fieldset');
+  var adInput = adForm.querySelectorAll('input');
   var map = document.querySelector('.map');
   var mapSelects = mapFiltersForm.querySelectorAll('select');
   var mapFieldsets = mapFiltersForm.querySelectorAll('fieldset');
@@ -26,19 +27,6 @@
     y: mainPin.style.top
   };
 
-  // блокирование формы
-
-  var setDisabledAttribute = function (elements) {
-    for (var i = 0; i < elements.length; i++) {
-      elements[i].disabled = true;
-    }
-  };
-
-  var getDisabled = function () {
-    setDisabledAttribute(adFieldsets);
-    setDisabledAttribute(mapFieldsets);
-    setDisabledAttribute(mapSelects);
-  };
 
   // создание адреса
 
@@ -81,6 +69,23 @@
     typeSelect.addEventListener('click', onTypeSelectClick);
   };
 
+  // блокирование формы
+
+  var setDisabledAttribute = function (elements) {
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].disabled = true;
+    }
+  };
+
+  var getDisabled = function () {
+    setDisabledAttribute(adFieldsets);
+    setDisabledAttribute(mapFieldsets);
+    setDisabledAttribute(mapSelects);
+    timeInSelect.removeEventListener('click', onTimeSelectClick);
+    timeOutSelect.removeEventListener('click', onTimeSelectClick);
+    typeSelect.removeEventListener('click', onTypeSelectClick);
+  };
+
   // очистка формы и карты
 
   var removeElements = function (elements) {
@@ -90,9 +95,6 @@
   };
 
   var onResetClick = function () {
-    timeInSelect.removeEventListener('click', onTimeSelectClick);
-    timeOutSelect.removeEventListener('click', onTimeSelectClick);
-    typeSelect.removeEventListener('click', onTypeSelectClick);
     adForm.reset();
     mainPin.style.left = defaultCoords.x;
     mainPin.style.top = defaultCoords.y;
@@ -105,10 +107,19 @@
 
   resetButton.addEventListener('click', onResetClick);
 
+  var validate = function (field) {
+    field.addEventListener('invalid', function () {
+      field.style = 'border: 3px solid red';
+    });
+  };
+  for (var i = 0; i < adInput.length; i++) {
+    var input = adInput[i];
+    validate(input);
+  }
+
   window.form = {
     setAddress: setAddress,
     getActivate: getActivate,
     getDisabled: getDisabled
   };
 })();
-
