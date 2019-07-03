@@ -7,6 +7,7 @@
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   var errorButton = document.querySelector('.error__button');
   var housingTypeSelect = document.querySelector('#housing-type');
+  var quantityPins = 5;
   var defaultCoords = {
     x: mainPin.style.left,
     y: mainPin.style.top
@@ -14,21 +15,22 @@
 
   // добавить кучку пинов в разметку
   var ads = [];
-  var checkedTypeOFHousing = 'any';
+  var checkedTypeOFHousing = housingTypeSelect.value;
   housingTypeSelect.addEventListener('click', function (evt) {
     checkedTypeOFHousing = evt.target.value;
     updatePins();
   });
 
   var updatePins = function () {
-    if (checkedTypeOFHousing !== 'any') {
-      removeElements(document.querySelectorAll('.pin'));
-      renderPins(ads.filter(function (ad) {
+    removeElements(document.querySelectorAll('.pin'));
+    renderPins(filterPins(ads).slice(0, quantityPins));
+  };
+  var filterPins = function (data) {
+    return checkedTypeOFHousing !== 'any' ?
+      data.filter(function (ad) {
         return ad.offer.type === checkedTypeOFHousing;
-      }).slice(0, 5));
-    } else {
-      renderPins(ads.slice(0, 5));
-    }
+      }) :
+      data;
   };
 
   var renderPins = function (data) {
