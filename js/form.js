@@ -84,7 +84,7 @@
     adForm.reset();
     setAddress();
     getDisabled();
-    window.map.deactivateMap();
+    window.map.deactivate();
   };
 
   var validate = function (field) {
