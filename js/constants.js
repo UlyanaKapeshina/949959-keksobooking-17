@@ -17,7 +17,7 @@
     PIN_WIDTH: 50,
     ESC_KEYCODE: 27,
     ENTER_KEYCODE: 13,
-  }
+  };
 
 })();
 
