@@ -4,19 +4,46 @@
   var pinsList = document.querySelector('.map__pins');
   var map = document.querySelector('.map');
   var mainPin = document.querySelector(' .map__pin--main');
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+  var errorButton = document.querySelector('.error__button');
+  var housingTypeSelect = document.querySelector('#housing-type');
+  var quantityPins = 5;
   var defaultCoords = {
     x: mainPin.style.left,
     y: mainPin.style.top
   };
 
   // добавить кучку пинов в разметку
+  var ads = [];
+  var checkedTypeOFHousing = housingTypeSelect.value;
+  housingTypeSelect.addEventListener('click', function (evt) {
+    checkedTypeOFHousing = evt.target.value;
+    updatePins();
+  });
 
-  var onLoad = function (ads) {
+  var updatePins = function () {
+    removeElements(document.querySelectorAll('.pin'));
+    renderPins(filterPins(ads).slice(0, quantityPins));
+  };
+  var filterPins = function (data) {
+    return checkedTypeOFHousing !== 'any' ?
+      data.filter(function (ad) {
+        return ad.offer.type === checkedTypeOFHousing;
+      }) :
+      data;
+  };
+
+  var renderPins = function (data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < ads.length; i++) {
-      fragment.appendChild(window.pin.renderPin(ads[i]));
+    for (var i = 0; i < data.length; i++) {
+      fragment.appendChild(window.pin.render(data[i]));
     }
     pinsList.appendChild(fragment);
+  };
+
+  var onLoad = function (data) {
+    ads = data;
+    updatePins();
   };
 
   // активация страницы после перемещения пина
@@ -38,16 +65,14 @@
     mainPin.style.left = defaultCoords.x;
     mainPin.style.top = defaultCoords.y;
     removeElements(document.querySelectorAll('.pin'));
+    dragged = false;
   };
 
 
   var onError = function () {
-    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
     var error = errorTemplate.cloneNode(true);
     var main = document.querySelector('main');
     main.appendChild(error);
-    var errorButton = document.querySelector('.error__button');
-
     deactivateMap();
     window.form.getDisabled();
 
@@ -58,18 +83,17 @@
       window.form.getActivate();
       document.removeEventListener('keydown', onErrorEscPress);
       errorButton.removeEventListener('click', errorClose);
-      errorButton.removeEventListener('keydown', onErrorEscPress);
+      document.removeEventListener('click', errorClose);
     };
 
     var onErrorEscPress = function (evt) {
-      if (evt.keyCode === window.constants.ESC_KEYCODE || (evt.keyCode === window.constants.ENTER_KEYCODE && evt.target === errorButton)) {
+      if (evt.keyCode === window.constants.ESC_KEYCODE) {
         errorClose();
       }
     };
 
     errorButton.addEventListener('click', errorClose);
     document.addEventListener('click', errorClose);
-    errorButton.addEventListener('keydown', onErrorEscPress);
     document.addEventListener('keydown', onErrorEscPress);
 
   };
@@ -130,8 +154,8 @@
   });
 
   window.map = {
-    deactivateMap: deactivateMap
-  }
+    deactivate: deactivateMap
+  };
 })();
 
 
