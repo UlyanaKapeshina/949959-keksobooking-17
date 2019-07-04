@@ -7,7 +7,8 @@
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   var errorButton = document.querySelector('.error__button');
   var housingTypeSelect = document.querySelector('#housing-type');
-  var quantityPins = 5;
+  var QUANTITY_PINS = 5;
+  var ANY_TYPE = 'any';
   var defaultCoords = {
     x: mainPin.style.left,
     y: mainPin.style.top
@@ -16,17 +17,17 @@
   // добавить кучку пинов в разметку
   var ads = [];
   var checkedTypeOFHousing = housingTypeSelect.value;
-  housingTypeSelect.addEventListener('click', function (evt) {
+  housingTypeSelect.addEventListener('change', function (evt) {
     checkedTypeOFHousing = evt.target.value;
     updatePins();
   });
 
   var updatePins = function () {
     removeElements(document.querySelectorAll('.pin'));
-    renderPins(filterPins(ads).slice(0, quantityPins));
+    renderPins(filterPins(ads).slice(0, QUANTITY_PINS));
   };
   var filterPins = function (data) {
-    return checkedTypeOFHousing !== 'any' ?
+    return checkedTypeOFHousing !== ANY_TYPE ?
       data.filter(function (ad) {
         return ad.offer.type === checkedTypeOFHousing;
       }) :
@@ -35,9 +36,10 @@
 
   var renderPins = function (data) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < data.length; i++) {
+    data.forEach(function (ad, i) {
       fragment.appendChild(window.pin.render(data[i]));
-    }
+      fragment.appendChild(window.card.render(data[i]));
+    });
     pinsList.appendChild(fragment);
   };
 
