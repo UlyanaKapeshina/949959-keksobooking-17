@@ -12,7 +12,6 @@
     pin.style.top = (ad.location.y - window.constants.PIN_HEIGHT) + 'px';
     pin.querySelector('img').src = ad.author.avatar;
     pin.querySelector('img').alt = ad.offer.type;
-
     return pin;
   };
 

@@ -5,8 +5,8 @@
   var map = document.querySelector('.map');
   var mainPin = document.querySelector(' .map__pin--main');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-  var errorButton = document.querySelector('.error__button');
   var housingTypeSelect = document.querySelector('#housing-type');
+
   var QUANTITY_PINS = 5;
   var ANY_TYPE = 'any';
   var defaultCoords = {
@@ -14,13 +14,13 @@
     y: mainPin.style.top
   };
 
-  // добавить кучку пинов в разметку
   var ads = [];
   var checkedTypeOFHousing = housingTypeSelect.value;
   housingTypeSelect.addEventListener('change', function (evt) {
     checkedTypeOFHousing = evt.target.value;
     updatePins();
   });
+  // фильтрация пинов
 
   var updatePins = function () {
     removeElements(document.querySelectorAll('.pin'));
@@ -33,12 +33,20 @@
       }) :
       data;
   };
+  // отрисовка пинов
 
   var renderPins = function (data) {
     var fragment = document.createDocumentFragment();
-    data.forEach(function (ad, i) {
-      fragment.appendChild(window.pin.render(data[i]));
-      fragment.appendChild(window.card.render(data[i]));
+    data.forEach(function (ad) {
+      var onClick = function () {
+        document.querySelectorAll('.map__card').forEach(function (card) {
+          card.remove();
+        });
+        map.insertBefore(window.card.render(ad), document.querySelector('.map__filters-container'));
+      };
+      var pin = window.pin.render(ad);
+      pin.addEventListener('click', onClick);
+      fragment.appendChild(pin);
     });
     pinsList.appendChild(fragment);
   };
@@ -48,11 +56,12 @@
     updatePins();
   };
 
-  // активация страницы после перемещения пина
+
+  // активация карты после перемещения пина
 
   var activateMap = function () {
     map.classList.remove('map--faded');
-    window.load(onLoad, onError);
+    window.backend.load(onLoad, onError);
     dragged = true;
   };
 
@@ -61,18 +70,21 @@
       elements[i].remove();
     }
   };
+  // деактивация карты
 
   var deactivateMap = function () {
     map.classList.add('map--faded');
     mainPin.style.left = defaultCoords.x;
     mainPin.style.top = defaultCoords.y;
     removeElements(document.querySelectorAll('.pin'));
+    removeElements(document.querySelectorAll('.map__card'));
     dragged = false;
   };
 
-
-  var onError = function () {
+  //
+  var onError = function (message) {
     var error = errorTemplate.cloneNode(true);
+    error.querySelector('.error__message').textContent = message;
     var main = document.querySelector('main');
     main.appendChild(error);
     deactivateMap();
@@ -83,20 +95,20 @@
       activateMap();
       window.form.setAddress();
       window.form.getActivate();
-      document.removeEventListener('keydown', onErrorEscPress);
+      document.removeEventListener('keydown', onEscPress);
       errorButton.removeEventListener('click', errorClose);
       document.removeEventListener('click', errorClose);
     };
 
-    var onErrorEscPress = function (evt) {
+    var onEscPress = function (evt) {
       if (evt.keyCode === window.constants.ESC_KEYCODE) {
         errorClose();
       }
     };
-
+    var errorButton = document.querySelector('.error__button');
     errorButton.addEventListener('click', errorClose);
     document.addEventListener('click', errorClose);
-    document.addEventListener('keydown', onErrorEscPress);
+    document.addEventListener('keydown', onEscPress);
 
   };
 
@@ -156,7 +168,8 @@
   });
 
   window.map = {
-    deactivate: deactivateMap
+    deactivate: deactivateMap,
+    onError: onError
   };
 })();
 
