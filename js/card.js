@@ -3,6 +3,7 @@
 (function () {
   var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var newPhoto = document.querySelector('#card').content.querySelector('.popup__photo').cloneNode(true);
+
   // создать карточку
 
   var renderCard = function (ad) {
