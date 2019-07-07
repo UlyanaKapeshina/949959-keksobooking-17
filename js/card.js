@@ -2,7 +2,7 @@
 
 (function () {
   var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-
+  var newPhoto = document.querySelector('#card').content.querySelector('.popup__photo').cloneNode(true);
   // создать карточку
 
   var renderCard = function (ad) {
@@ -20,19 +20,48 @@
     card.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkin;
     card.querySelector('.popup__description').textContent = ad.offer.description;
 
-    var photo = card.querySelector('.popup__photo');
-    var fragment = document.createDocumentFragment();
-    if (ad.offer.photos.length > 0) {
-      for (var i = 0; i < ad.offer.photos.length; i++) {
-        var newPhoto = photo.cloneNode(true);
-        newPhoto.src = ad.offer.photos[i];
-        newPhoto.alt = 'Фотография жилья';
-        fragment.appendChild(newPhoto);
+    var renderPhotos = function (photos) {
+      card.querySelectorAll('.popup__photo').forEach(function (photo) {
+        photo.remove();
+      });
+
+      var fragment = document.createDocumentFragment();
+      photos.forEach(function (photo) {
+        newPhoto.src = photo;
+        fragment.appendChild(newPhoto.cloneNode(true));
+      });
+      card.querySelector('.popup__photos').appendChild(fragment);
+    };
+
+    var renderFeatures = function (features) {
+      var fragmentFeature = document.createDocumentFragment();
+      card.querySelectorAll('.popup__feature').forEach(function (feature) {
+        feature.remove();
+      });
+
+      features.forEach(function (feature) {
+        var newFeature = document.createElement('li');
+        newFeature.classList.add('popup__feature', 'popup__feature--' + feature);
+        fragmentFeature.appendChild(newFeature);
+      });
+      card.querySelector('.popup__features').appendChild(fragmentFeature);
+    };
+    var onClose = function () {
+      card.remove();
+      card.querySelector('.popup__close').removeEventListener('click', onClose);
+      document.removeEventListener('keydown', onEscPress);
+    };
+    var onEscPress = function (evt) {
+      if (evt.keyCode === window.constants.ESC_KEYCODE) {
+        onClose();
       }
-    }
-    card.querySelector('.popup__photos').appendChild(fragment);
+    };
 
+    renderPhotos(ad.offer.photos);
+    renderFeatures(ad.offer.features);
 
+    card.querySelector('.popup__close').addEventListener('click', onClose);
+    document.addEventListener('keydown', onEscPress);
     return card;
   };
 

@@ -15,6 +15,17 @@
   var timeInSelect = adForm.querySelector('#timein');
   var timeOutSelect = adForm.querySelector('#timeout');
   var resetButton = adForm.querySelector('.ad-form__reset');
+  var roomsSelect = adForm.querySelector('#room_number');
+  var capacitySelect = adForm.querySelector('#capacity');
+  var capacity = capacitySelect.querySelectorAll('option');
+
+  var RULES = {
+    '1': ['1'],
+    '2': ['1', '2'],
+    '3': ['1', '2', '3'],
+    '100': ['0']
+  };
+
 
   // создание адреса
 
@@ -40,6 +51,36 @@
     }
   };
 
+
+  var onRoomsSelectChange = function () {
+    var quantityGuests = RULES[roomsSelect.value];
+    for (var i = 0; i < capacity.length; i++) {
+      capacity[i].disabled = false;
+      if (quantityGuests.indexOf(capacity[i].value) === -1) {
+        capacity[i].disabled = true;
+      }
+    }
+    if (quantityGuests.indexOf(capacitySelect.value) === -1) {
+      capacitySelect.setCustomValidity('Выберите другое количество комнат');
+    }
+  };
+
+  //  if (quantityGuests.indexOf(capacity.value) === -1)
+
+  // var onRoomsSelectChange = function (evt) {
+  //   for (var i = 0; i < capacitySelect.options.length; i++) {
+  //     if (evt.target.value === '100' && capacitySelect.options[i].value === '0') {
+  //       capacitySelect.options[i].disabled = false;
+  //     } else if (evt.target.value === '100' && capacitySelect.options[i].value === '1') {
+  //       capacitySelect.options[i].disabled = true;
+  //     } else if (evt.target.value < capacitySelect.options[i].value || capacitySelect.options[i].value === '0') {
+  //       capacitySelect.options[i].disabled = true;
+  //     } else {
+  //       capacitySelect.options[i].disabled = false;
+  //     }
+  //   }
+  // };
+
   // разблокировка формы
 
   var removeDisabledAttribute = function (elements) {
@@ -55,8 +96,11 @@
     adForm.classList.remove('ad-form--disabled');
     timeInSelect.addEventListener('click', onTimeSelectClick);
     timeOutSelect.addEventListener('click', onTimeSelectClick);
+    roomsSelect.addEventListener('change', onRoomsSelectChange);
+
     typeSelect.addEventListener('click', onTypeSelectClick);
     resetButton.addEventListener('click', onResetClick);
+    adForm.addEventListener('submit', onSubmitClick);
   };
 
   // блокирование формы
@@ -76,7 +120,9 @@
     typeSelect.removeEventListener('click', onTypeSelectClick);
     adForm.classList.add('ad-form--disabled');
     resetButton.removeEventListener('click', onResetClick);
+    adForm.removeEventListener('submit', onSubmitClick);
   };
+  getDisabled();
 
   // очистка формы и карты
 
@@ -85,6 +131,25 @@
     setAddress();
     getDisabled();
     window.map.deactivate();
+  };
+
+  var onSubmitClick = function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(adForm), onLoad, window.map.onError);
+  };
+
+  var onLoad = function () {
+    var successTemplate = document.querySelector('#success').content.querySelector('.success');
+    var success = successTemplate.cloneNode(true);
+    var main = document.querySelector('main');
+    main.appendChild(success);
+
+    var onSuccessClick = function () {
+      main.removeChild(success);
+      document.removeEventListener('click', onSuccessClick);
+    };
+
+    document.addEventListener('click', onSuccessClick);
   };
 
   var validate = function (field) {
@@ -96,6 +161,7 @@
     var input = adInput[i];
     validate(input);
   }
+
 
   window.form = {
     setAddress: setAddress,
