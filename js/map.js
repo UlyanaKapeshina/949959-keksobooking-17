@@ -3,112 +3,64 @@
 (function () {
   var pinsList = document.querySelector('.map__pins');
   var map = document.querySelector('.map');
+  var mapFilters = map.querySelector('.map__filters');
   var mainPin = document.querySelector(' .map__pin--main');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-  var housingTypeSelect = document.querySelector('#housing-type');
-  var housingPriceSelect = document.querySelector('#housing-price');
-  var housingRoomsSelect = document.querySelector('#housing-rooms');
-  var housingGuestsSelect = document.querySelector('#housing-guests');
-  var featuresCheckboxes = map.querySelectorAll('input[name=features]');
-  var MIN_PRICE = 10000;
-  var MAX_PRICE = 50000;
+  // var housingTypeSelect = document.querySelector('#housing-type');
+  // var housingPriceSelect = document.querySelector('#housing-price');
+  // var housingRoomsSelect = document.querySelector('#housing-rooms');
+  // var housingGuestsSelect = document.querySelector('#housing-guests');
+  // var featuresCheckboxes = map.querySelectorAll('input[name=features]');
+
 
   var QUANTITY_PINS = 5;
-  var ANY_TYPE = 'any';
+
   var defaultCoords = {
     x: mainPin.style.left,
     y: mainPin.style.top
   };
 
   var ads = [];
-  var checkedTypeOFHousing = housingTypeSelect.value;
-  housingTypeSelect.addEventListener('change', function (evt) {
-    checkedTypeOFHousing = evt.target.value;
-    updatePins();
-  });
-  var checkedPrice = housingPriceSelect.value;
-  housingPriceSelect.addEventListener('change', function (evt) {
-    checkedPrice = evt.target.value;
-    updatePins();
-  });
-  var checkedRooms = housingRoomsSelect.value;
-  housingRoomsSelect.addEventListener('change', function (evt) {
-    checkedRooms = evt.target.value;
-    updatePins();
-  });
-  var checkedGuests = housingGuestsSelect.value;
-  housingGuestsSelect.addEventListener('change', function (evt) {
-    checkedGuests = evt.target.value;
-    updatePins();
-  });
-  featuresCheckboxes.forEach(function (checkbox) {
-    checkbox.addEventListener('change', function () {
-      updatePins();
-    });
-  });
 
-  var getTypePrice = function (price) {
-    var type;
-    if (price > MAX_PRICE) {
-      type = 'high';
-    } else if (price < MIN_PRICE) {
-      type = 'low';
-    } else {
-      type = 'middle';
-    }
-    return type;
-  };
+  mapFilters.addEventListener('change', function () {
+    updatePins();
+  });
+  // var checkedTypeOFHousing = housingTypeSelect.value;
+  // housingTypeSelect.addEventListener('change', function (evt) {
+  //   checkedTypeOFHousing = evt.target.value;
+  //   updatePins();
+  // });
+  // var checkedPrice = housingPriceSelect.value;
+  // housingPriceSelect.addEventListener('change', function (evt) {
+  //   checkedPrice = evt.target.value;
+  //   updatePins();
+  // });
+  // var checkedRooms = housingRoomsSelect.value;
+  // housingRoomsSelect.addEventListener('change', function (evt) {
+  //   checkedRooms = evt.target.value;
+  //   updatePins();
+  // });
+  // var checkedGuests = housingGuestsSelect.value;
+  // housingGuestsSelect.addEventListener('change', function (evt) {
+  //   checkedGuests = evt.target.value;
+  //   updatePins();
+  // });
+  // featuresCheckboxes.forEach(function (checkbox) {
+  //   checkbox.addEventListener('change', function () {
+  //     updatePins();
+  //   });
+  // });
+
+
   // фильтрация пинов
 
   var updatePins = function () {
     removeElements(document.querySelectorAll('.pin'));
     removeElements(document.querySelectorAll('.map__card'));
-    renderPins(filterPins(ads).slice(0, QUANTITY_PINS));
+    renderPins(window.filter(ads).slice(0, QUANTITY_PINS));
   };
-  var filterPins = function (data) {
-    if (checkedTypeOFHousing !== ANY_TYPE) {
-      data = data.filter(function (ad) {
-        return ad.offer.type === checkedTypeOFHousing;
-      });
-    }
-
-    if (checkedRooms !== ANY_TYPE) {
-      data = data.filter(function (ad) {
-        return ad.offer.rooms === parseInt(checkedRooms, 10);
-      });
-    }
-    if (checkedPrice !== ANY_TYPE) {
-      data = data.filter(function (ad) {
-        return checkedPrice === getTypePrice(ad.offer.price);
-      });
-    }
-    if (checkedGuests !== ANY_TYPE) {
-      data = data.filter(function (ad) {
-
-        return ad.offer.guests === parseInt(checkedGuests, 10);
-      });
-    }
-    var featureFilter = document.querySelectorAll('input[name=features]:checked');
-    var featuresValues = [];
-    featureFilter.forEach(function (feature) {
-      featuresValues.push(feature.value);
-    });
-    if (featuresValues.length > 0) {
-      data = data.filter(function (ad) {
-
-        return featuresValues.every(function (feature) {
-          return ad.offer.features.includes(feature);
-        });
 
 
-      });
-    }
-    return data;
-
-    //
-
-
-  };
   // отрисовка пинов
 
   var renderPins = function (data) {
