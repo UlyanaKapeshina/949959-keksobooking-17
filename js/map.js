@@ -3,46 +3,53 @@
 (function () {
   var pinsList = document.querySelector('.map__pins');
   var map = document.querySelector('.map');
+  var mapFilters = map.querySelector('.map__filters');
   var mainPin = document.querySelector(' .map__pin--main');
   var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-  var housingTypeSelect = document.querySelector('#housing-type');
+  // var housingTypeSelect = document.querySelector('#housing-type');
+  // var housingPriceSelect = document.querySelector('#housing-price');
+  // var housingRoomsSelect = document.querySelector('#housing-rooms');
+  // var housingGuestsSelect = document.querySelector('#housing-guests');
+  // var featuresCheckboxes = map.querySelectorAll('input[name=features]');
+
 
   var QUANTITY_PINS = 5;
-  var ANY_TYPE = 'any';
+
   var defaultCoords = {
     x: mainPin.style.left,
     y: mainPin.style.top
   };
 
   var ads = [];
-  var checkedTypeOFHousing = housingTypeSelect.value;
-  housingTypeSelect.addEventListener('change', function (evt) {
-    checkedTypeOFHousing = evt.target.value;
+
+  mapFilters.addEventListener('change', function () {
     updatePins();
   });
+
   // фильтрация пинов
 
   var updatePins = function () {
     removeElements(document.querySelectorAll('.pin'));
-    renderPins(filterPins(ads).slice(0, QUANTITY_PINS));
+    removeElements(document.querySelectorAll('.map__card'));
+    renderPins(window.filter(ads).slice(0, QUANTITY_PINS));
   };
-  var filterPins = function (data) {
-    return checkedTypeOFHousing !== ANY_TYPE ?
-      data.filter(function (ad) {
-        return ad.offer.type === checkedTypeOFHousing;
-      }) :
-      data;
-  };
+
+
   // отрисовка пинов
 
   var renderPins = function (data) {
     var fragment = document.createDocumentFragment();
     data.forEach(function (ad) {
       var onClick = function () {
+
         document.querySelectorAll('.map__card').forEach(function (card) {
           card.remove();
         });
+        document.querySelectorAll('.pin').forEach(function (pin) {
+          pin.classList.remove('map__pin--active');
+        });
         map.insertBefore(window.card.render(ad), document.querySelector('.map__filters-container'));
+        pin.classList.add('map__pin--active');
       };
       var pin = window.pin.render(ad);
       pin.addEventListener('click', onClick);
@@ -112,7 +119,7 @@
 
   };
 
-    // перемещения пина
+  // перемещения пина
 
   var dragged = false;
 
@@ -172,5 +179,3 @@
     onError: onError
   };
 })();
-
-
