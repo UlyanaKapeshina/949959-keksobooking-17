@@ -54,32 +54,18 @@
 
   var onRoomsSelectChange = function () {
     var quantityGuests = RULES[roomsSelect.value];
-    for (var i = 0; i < capacity.length; i++) {
-      capacity[i].disabled = false;
-      if (quantityGuests.indexOf(capacity[i].value) === -1) {
-        capacity[i].disabled = true;
-      }
-    }
+    capacity.forEach(function (value) {
+      value.disabled = quantityGuests.indexOf(value.value) === -1;
+    });
+  };
+  var onCapacitySelectChange = function () {
+    var quantityGuests = RULES[roomsSelect.value];
     if (quantityGuests.indexOf(capacitySelect.value) === -1) {
-      capacitySelect.setCustomValidity('Выберите другое количество комнат');
+      capacitySelect.setCustomValidity('Выберите другое количество мест');
+    } else {
+      capacitySelect.setCustomValidity('');
     }
   };
-
-  //  if (quantityGuests.indexOf(capacity.value) === -1)
-
-  // var onRoomsSelectChange = function (evt) {
-  //   for (var i = 0; i < capacitySelect.options.length; i++) {
-  //     if (evt.target.value === '100' && capacitySelect.options[i].value === '0') {
-  //       capacitySelect.options[i].disabled = false;
-  //     } else if (evt.target.value === '100' && capacitySelect.options[i].value === '1') {
-  //       capacitySelect.options[i].disabled = true;
-  //     } else if (evt.target.value < capacitySelect.options[i].value || capacitySelect.options[i].value === '0') {
-  //       capacitySelect.options[i].disabled = true;
-  //     } else {
-  //       capacitySelect.options[i].disabled = false;
-  //     }
-  //   }
-  // };
 
   // разблокировка формы
 
@@ -96,8 +82,8 @@
     adForm.classList.remove('ad-form--disabled');
     timeInSelect.addEventListener('click', onTimeSelectClick);
     timeOutSelect.addEventListener('click', onTimeSelectClick);
-    roomsSelect.addEventListener('change', onRoomsSelectChange);
-
+    roomsSelect.addEventListener('click', onRoomsSelectChange);
+    capacitySelect.addEventListener('click', onCapacitySelectChange);
     typeSelect.addEventListener('click', onTypeSelectClick);
     resetButton.addEventListener('click', onResetClick);
     adForm.addEventListener('submit', onSubmitClick);
@@ -143,13 +129,25 @@
     var success = successTemplate.cloneNode(true);
     var main = document.querySelector('main');
     main.appendChild(success);
+    adForm.reset();
+    setAddress();
+    getDisabled();
+    window.map.deactivate();
+
+    var onEscPress = function (evt) {
+      if (evt.keyCode === window.constants.ESC_KEYCODE) {
+        onSuccessClick();
+      }
+    };
 
     var onSuccessClick = function () {
       main.removeChild(success);
       document.removeEventListener('click', onSuccessClick);
+      document.removeEventListener('keydown', onEscPress);
     };
 
     document.addEventListener('click', onSuccessClick);
+    document.addEventListener('keydown', onEscPress);
   };
 
   var validate = function (field) {

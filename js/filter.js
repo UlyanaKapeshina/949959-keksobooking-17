@@ -10,15 +10,13 @@
   var MAX_PRICE = 50000;
 
   var getTypePrice = function (price) {
-    var type;
     if (price > MAX_PRICE) {
-      type = 'high';
-    } else if (price < MIN_PRICE) {
-      type = 'low';
-    } else {
-      type = 'middle';
+      return 'high';
     }
-    return type;
+    if (price < MIN_PRICE) {
+      return 'low';
+    }
+    return 'middle';
   };
 
   window.filter = function (data) {
@@ -26,6 +24,14 @@
     var checkedPrice = housingPriceSelect.value;
     var checkedRooms = housingRoomsSelect.value;
     var checkedGuests = housingGuestsSelect.value;
+
+    var validateNull = function (element) {
+      return typeof element !== 'undefined' && element !== null;
+    };
+    data = data.filter(function (ad) {
+      return validateNull(ad) && validateNull(ad.offer);
+    });
+
     if (checkedTypeOFHousing !== ANY_TYPE) {
       data = data.filter(function (ad) {
         return ad.offer.type === checkedTypeOFHousing;
@@ -35,7 +41,7 @@
     if (checkedRooms !== ANY_TYPE) {
 
       data = data.filter(function (ad) {
-        return ad.offer.rooms === parseInt(checkedRooms, 10);
+        return ad.offer.rooms === parseInt(housingRoomsSelect.value, 10);
       });
     }
     if (checkedPrice !== ANY_TYPE) {
@@ -50,10 +56,10 @@
       });
     }
     var featureFilter = document.querySelectorAll('input[name=features]:checked');
-    var featuresValues = [];
-    featureFilter.forEach(function (feature) {
-      featuresValues.push(feature.value);
+    var featuresValues = Array.from(featureFilter).map(function (feature) {
+      return feature.value;
     });
+
     if (featuresValues.length > 0) {
       data = data.filter(function (ad) {
         return featuresValues.every(function (feature) {

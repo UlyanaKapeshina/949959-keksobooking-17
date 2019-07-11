@@ -25,32 +25,6 @@
   mapFilters.addEventListener('change', function () {
     updatePins();
   });
-  // var checkedTypeOFHousing = housingTypeSelect.value;
-  // housingTypeSelect.addEventListener('change', function (evt) {
-  //   checkedTypeOFHousing = evt.target.value;
-  //   updatePins();
-  // });
-  // var checkedPrice = housingPriceSelect.value;
-  // housingPriceSelect.addEventListener('change', function (evt) {
-  //   checkedPrice = evt.target.value;
-  //   updatePins();
-  // });
-  // var checkedRooms = housingRoomsSelect.value;
-  // housingRoomsSelect.addEventListener('change', function (evt) {
-  //   checkedRooms = evt.target.value;
-  //   updatePins();
-  // });
-  // var checkedGuests = housingGuestsSelect.value;
-  // housingGuestsSelect.addEventListener('change', function (evt) {
-  //   checkedGuests = evt.target.value;
-  //   updatePins();
-  // });
-  // featuresCheckboxes.forEach(function (checkbox) {
-  //   checkbox.addEventListener('change', function () {
-  //     updatePins();
-  //   });
-  // });
-
 
   // фильтрация пинов
 
