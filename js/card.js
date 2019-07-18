@@ -1,13 +1,13 @@
 'use strict';
 
 (function () {
-  var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  var newPhoto = document.querySelector('#card').content.querySelector('.popup__photo').cloneNode(true);
   var HOUSING_TYPE = {
     'flat': 'Квартира',
     'house': 'Дом',
     'bungalo': 'Бунгало'
   };
+  var similarCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var newPhoto = document.querySelector('#card').content.querySelector('.popup__photo').cloneNode(true);
 
   var validateNull = function (element) {
     return typeof element !== 'undefined' && element !== null;
@@ -35,7 +35,7 @@
 
     var renderPhotos = function (photos) {
       if (!validateNull(photos) || photos.length === 0) {
-        card.querySelectorAll('.popup__features').remove();
+        card.querySelector('.popup__photos').remove();
         return;
       }
 
@@ -53,7 +53,7 @@
 
     var renderFeatures = function (features) {
       if (!validateNull(features) || features.length === 0) {
-        card.querySelectorAll('.popup__features').remove();
+        card.querySelector('.popup__features').remove();
         return;
       }
 
@@ -94,18 +94,18 @@
     renderPhotos(ad.offer.photos);
     renderFeatures(ad.offer.features);
 
-    var onClose = function () {
+    var closeCard = function () {
       card.remove();
-      card.querySelector('.popup__close').removeEventListener('click', onClose);
+
+      card.querySelector('.popup__close').removeEventListener('click', closeCard);
       document.removeEventListener('keydown', onEscPress);
+      document.querySelector('.map__pin--active').classList.remove('map__pin--active');
     };
     var onEscPress = function (evt) {
-      if (evt.keyCode === window.constants.ESC_KEYCODE) {
-        onClose();
-      }
+      window.util.isEscEvent(evt, closeCard);
     };
 
-    card.querySelector('.popup__close').addEventListener('click', onClose);
+    card.querySelector('.popup__close').addEventListener('click', closeCard);
     document.addEventListener('keydown', onEscPress);
     return card;
   };
