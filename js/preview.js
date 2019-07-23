@@ -10,6 +10,7 @@
     image.width = '70';
     image.height = '70';
     image.style = 'border-radius: 5px';
+
     var newDiv = div.cloneNode();
     newDiv.draggable = true;
     newDiv.style = 'cursor: move; user-select: none';
@@ -20,7 +21,7 @@
 
   // загрузка фоторгафии если формат соответствует
 
-  var image = function (file, preview) {
+  var createPreview = function (file, preview) {
     if (checkFileType(file)) {
       readFile(preview, file);
     }
@@ -48,7 +49,7 @@
   };
 
   window.preview = {
-    image: image,
+    create: createPreview,
     render: renderImg
   };
 })();

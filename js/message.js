@@ -5,7 +5,7 @@
   // закрытие сообщения по нажатию ESC
 
   var onEscPress = function (evt) {
-    window.util.isEscEvent(evt, onErrorCloseClick);
+    window.util.invokeIfEscEvent(evt, onErrorCloseClick);
   };
 
   // закрытие сообщения об ошибке
@@ -20,16 +20,16 @@
 
   // создание сообщения об ошибке если ошибка в присланных с сервера данных об объявлениях
 
-  var onErrorData = function () {
-    onError();
+  var onErrorData = function (message) {
+    onError(message);
     window.map.deactivate();
     window.form.getDisabled();
   };
 
   // создание сообщения об ошибке если ошибка возникла при отправлении формы
 
-  var onErrorForm = function () {
-    onError();
+  var onErrorForm = function (message) {
+    onError(message);
     window.form.setAddress();
   };
 

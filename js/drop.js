@@ -5,34 +5,33 @@
   // загрузка превью изображений перетаскиванием из папки фоторгафий
 
   var getActivateDrop = function (dropbox) {
-    // dropbox.addEventListener('dragenter', noopHandler, false);
-    // dropbox.addEventListener('dragexit', noopHandler, false);
-    dropbox.addEventListener('dragover', noopHandler, false);
-    dropbox.addEventListener('dragleave', noopHandler2, false);
-    dropbox.addEventListener('drop', drop, false);
+    dropbox.addEventListener('dragover', onDragOver, false);
+    dropbox.addEventListener('dragleave', onDragLeave, false);
+    dropbox.addEventListener('drop', onDrop, false);
   };
   var getDeactivateDrop = function (dropbox) {
-    dropbox.removeEventListener('dragover', noopHandler, false);
-    dropbox.removeEventListener('drop', drop, false);
+    dropbox.removeEventListener('dragover', onDragOver, false);
+    dropbox.removeEventListener('dragleave', onDragLeave, false);
+    dropbox.removeEventListener('drop', onDrop, false);
   };
-  var drop = function (evt) {
+  var onDrop = function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
-    var input = document.getElementById(evt.currentTarget.htmlFor);
+    var input = document.querySelector('#' + evt.currentTarget.htmlFor);
     if (input.multiple) {
-      window.drop.processInputMultiple(evt.dataTransfer.files);
+      window.form.processInputMultiple(evt.dataTransfer.files);
     } else {
-      window.drop.processInputOne(evt.dataTransfer.files);
+      window.form.processInputOne(evt.dataTransfer.files);
     }
     evt.currentTarget.style = '';
   };
 
-  var noopHandler = function (evt) {
+  var onDragOver = function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
     evt.currentTarget.style = FOCUS_STYLE;
   };
-  var noopHandler2 = function (evt) {
+  var onDragLeave = function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
     evt.currentTarget.style = '';
@@ -40,9 +39,7 @@
 
   window.drop = {
     getActivate: getActivateDrop,
-    getDeactivate: getDeactivateDrop,
-    processInputOne: null,
-    processInputMultiple: null
+    getDeactivate: getDeactivateDrop
   };
 
 

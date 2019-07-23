@@ -1,20 +1,21 @@
 'use strict';
 (function () {
 
-  var RULES = {
+  var Rules = {
     '1': ['1'],
     '2': ['1', '2'],
     '3': ['1', '2', '3'],
     '100': ['0']
   };
-  var PRICES = {
-    'bungalo': '0',
-    'flat': '1000',
-    'house': '5000',
-    'palace': '10000'
+  var Prices = {
+    'BUNGALO': '0',
+    'FLAT': '1000',
+    'HOUSE': '5000',
+    'PALACE': '10000'
   };
-  var MAIN_PIN_HEIGHT = 65;
-  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 62;
+  var MAIN_PIN_WIDTH = 62;
+  var MAIN_PIN_SPIKE = 20;
   var adForm = document.querySelector('.ad-form');
   var fieldsetsAndSelects = document.querySelectorAll('select, fieldset');
   var address = adForm.querySelector('#address');
@@ -26,7 +27,7 @@
   var resetButton = adForm.querySelector('.ad-form__reset');
   var roomsSelect = adForm.querySelector('#room_number');
   var capacitySelect = adForm.querySelector('#capacity');
-  var capacity = capacitySelect.querySelectorAll('option');
+  var capacities = capacitySelect.querySelectorAll('option');
   var avatarChooser = document.querySelector('#avatar');
   var avatarPreview = document.querySelector('.ad-form-header__preview').querySelector('img');
   var photoChooser = document.querySelector('#images');
@@ -37,11 +38,22 @@
   var dropboxPhotos = document.querySelector('.ad-form__drop-zone');
   var main = document.querySelector('main');
 
+
+
   // создание адреса метки в поле формы
+  var isActive = false;
+  // var canvas = document.getElementById('canvas');
+  // var ctx = canvas.getContext('2d');
+  // ctx.fillStyle = 'black';
+  // ctx.fillRect(0, 0, 100, 130);
 
   var setAddress = function () {
     var pinX = parseInt(mainPin.style.left, 10) + Math.ceil(MAIN_PIN_WIDTH / 2);
-    var pinY = parseInt(mainPin.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT);
+    var pinY = parseInt(mainPin.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT + MAIN_PIN_SPIKE);
+    if (!isActive) {
+      pinY = parseInt(mainPin.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT / 2);
+    }
+
     address.value = pinX + ', ' + pinY;
   };
   setAddress();
@@ -50,8 +62,8 @@
   // синхронизация типа жилья и стоимости
 
   var setMinPrice = function (type) {
-    priceInput.placeholder = PRICES[type];
-    priceInput.min = PRICES[type];
+    priceInput.placeholder = Prices[type.toUpperCase()];
+    priceInput.min = Prices[type.toUpperCase()];
   };
   var onTypeSelectChange = function () {
     setMinPrice(typeSelect.value);
@@ -70,18 +82,16 @@
   // синхронизация количества комнат и гостей
 
   var onRoomsSelectClick = function () {
-    var guestsQuantities = RULES[roomsSelect.value];
-    capacity.forEach(function (value) {
-      value.disabled = guestsQuantities.indexOf(value.value) === -1;
+    var guestsQuantities = Rules[roomsSelect.value];
+    capacities.forEach(function (option) {
+      option.selected = guestsQuantities.indexOf(option.value) !== -1;
+      option.disabled = guestsQuantities.indexOf(option.value) === -1;
     });
-  };
-  var onCapacitySelectClick = function () {
-    var quantityGuests = RULES[roomsSelect.value];
-    if (quantityGuests.indexOf(capacitySelect.value) === -1) {
-      capacitySelect.setCustomValidity('Выберите другое количество мест');
-    } else {
-      capacitySelect.setCustomValidity('');
-    }
+    // if (guestsQuantities.indexOf(capacitySelect.value) === -1) {
+    //   capacitySelect.setCustomValidity('Выберите другое количество мест');
+    // } else {
+    //   capacitySelect.setCustomValidity('');
+    // }
   };
 
   // загрузка фотографий при нажатии
@@ -89,23 +99,23 @@
   var onPhotoChange = function (evt) {
     var input = evt.currentTarget;
     if (input.multiple) {
-      window.drop.processInputMultiple(input.files);
+      processInputMultiple(input.files);
     } else {
-      window.drop.processInputOne(input.files);
+      processInputOne(input.files);
     }
   };
 
   // обработка одной фотографии для превью
 
-  window.drop.processInputOne = function (files) {
-    window.preview.image(files[0], avatarPreview);
+  var processInputOne = function (files) {
+    window.preview.create(files[0], avatarPreview);
   };
 
   // обработка пачки фотографий для превью
 
-  window.drop.processInputMultiple = function (files) {
+  var processInputMultiple = function (files) {
     Array.from(files).forEach(function (file) {
-      window.preview.image(file, window.preview.render(container, div));
+      window.preview.create(file, window.preview.render(container, div));
     });
   };
 
@@ -127,9 +137,10 @@
     avatarChooser.addEventListener('change', onPhotoChange);
     photoChooser.addEventListener('change', onPhotoChange);
     onRoomsSelectClick();
-    onCapacitySelectClick();
-    roomsSelect.addEventListener('click', onRoomsSelectClick);
-    capacitySelect.addEventListener('click', onCapacitySelectClick);
+    isActive = true;
+    setAddress();
+    roomsSelect.addEventListener('change', onRoomsSelectClick);
+    // capacitySelect.addEventListener('change', onRoomsSelectClick);
     typeSelect.addEventListener('change', onTypeSelectChange);
     resetButton.addEventListener('click', onResetFormClick);
     adForm.addEventListener('submit', onSubmitButtonClick);
@@ -158,6 +169,8 @@
     adForm.classList.add('ad-form--disabled');
     resetButton.removeEventListener('click', onResetFormClick);
     adForm.removeEventListener('submit', onSubmitButtonClick);
+    isActive = false;
+    setAddress();
     avatarPreview.src = defaultAvatar;
     window.drop.getDeactivate(dropboxAvatar);
     window.drop.getDeactivate(dropboxPhotos);
@@ -177,6 +190,17 @@
     window.map.deactivate();
   };
 
+  var onEnterPress = function (evt) {
+    var checkbox = evt.target;
+    window.util.invokeIfEnterEvent(evt, function () {
+      if (checkbox.type === 'checkbox') {
+        evt.preventDefault();
+        checkbox.checked = !checkbox.checked;
+      }
+    });
+  };
+
+  main.addEventListener('keydown', onEnterPress);
   // отправка формы объявления
 
   var onSubmitButtonClick = function (evt) {
@@ -198,7 +222,7 @@
     // закрытие сообщения об успешной отправке
 
     var onEscPress = function (evt) {
-      window.util.isEscEvent(evt, onSuccessMessageClick);
+      window.util.invokeIfEscrEvent(evt, onSuccessMessageClick);
     };
 
     var onSuccessMessageClick = function () {
@@ -214,6 +238,8 @@
   window.form = {
     setAddress: setAddress,
     getActivate: getActivate,
-    getDisabled: getDisabled
+    getDisabled: getDisabled,
+    processInputMultiple: processInputMultiple,
+    processInputOne: processInputOne
   };
 })();

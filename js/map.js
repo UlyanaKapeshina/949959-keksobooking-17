@@ -5,8 +5,8 @@
   var MAX_X = 1200;
   var MIN_Y = 130;
   var MAX_Y = 630;
-  var MAIN_PIN_HEIGHT = 65;
-  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 82;
+  var MAIN_PIN_WIDTH = 62;
   var QUANTITY_PINS = 5;
   var pinsList = document.querySelector('.map__pins');
   var map = document.querySelector('.map');
@@ -21,6 +21,12 @@
   var ads = [];
 
   // фильтрация пинов
+
+  // document.addEventListener('keydown', close);
+  // var close = function (popup) {
+  //   popup.remove();
+  //   document.removeEventListener('keydown', close);
+  // };
 
   var updatePins = function () {
     window.util.removeElements(document.querySelectorAll('.pin'));
@@ -39,9 +45,6 @@
       // открывается карточка объявления и подсвечивается пин
 
       var onClick = function () {
-        document.querySelectorAll('.map__card').forEach(function (card) {
-          card.remove();
-        });
         document.querySelectorAll('.pin').forEach(function (pin) {
           pin.classList.remove('map__pin--active');
         });
@@ -61,6 +64,10 @@
   var onLoad = function (data) {
     ads = data;
     updatePins();
+    mapFilters.addEventListener('change', onFiltersChange);
+    map.classList.remove('map--faded');
+    window.form.getActivate();
+    dragged = true;
   };
 
   // удаление дребезга при фильтрации пинов
@@ -71,10 +78,8 @@
 
   // активация карты после перемещения пина
   var activateMap = function () {
-    map.classList.remove('map--faded');
     window.backend.load(onLoad, window.message.onErrorData);
-    mapFilters.addEventListener('change', onFiltersChange);
-    dragged = true;
+    mainPin.removeEventListener('keydown', onEnterPress);
   };
 
   // деактивация карты
@@ -83,16 +88,23 @@
     map.classList.add('map--faded');
     mainPin.style.left = defaultCoords.x;
     mainPin.style.top = defaultCoords.y;
-    window.form.setAddress();
     window.util.removeElements(document.querySelectorAll('.pin'));
     window.util.removeElements(document.querySelectorAll('.map__card'));
     mapFilters.removeEventListener('change', onFiltersChange);
+    mainPin.addEventListener('keydown', onEnterPress);
     dragged = false;
   };
 
   // перемещения пина
 
   var dragged = false;
+
+  var onEnterPress = function (evt) {
+    window.util.invokeIfEnterEvent(evt, activateMap);
+
+  };
+
+  mainPin.addEventListener('keydown', onEnterPress);
 
   mainPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -120,12 +132,16 @@
       var mainPinY = mainPin.offsetTop - shift.y;
       var mainPinX = mainPin.offsetLeft - shift.x;
 
-      if (mainPinY < MAX_Y && mainPinY > MIN_Y - MAIN_PIN_HEIGHT) {
+      if (mainPinY + MAIN_PIN_HEIGHT <= MAX_Y && mainPinY + MAIN_PIN_HEIGHT >= MIN_Y) {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
       }
-      if (mainPinX < (MAX_X - MAIN_PIN_WIDTH) && mainPinX > MIN_X) {
+      if (mainPinX >= MIN_X && mainPinX <= MAX_X - MAIN_PIN_WIDTH) {
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+        // var x = mainPin.offsetLeft - shift.x;
+        // mainPin.style.left = x + 'px';
+        // sss.x = x + Math.ceil(MAIN_PIN_WIDTH / 2);
       }
+
     };
 
     var onMouseUp = function (upEvt) {
@@ -133,8 +149,7 @@
       if (!dragged) {
         upEvt.preventDefault();
         activateMap();
-        window.form.setAddress();
-        window.form.getActivate();
+
       }
 
       document.removeEventListener('mousemove', onMouseMove);
@@ -144,9 +159,12 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
+  // var sss={x:0,y:0};
   window.map = {
     deactivate: deactivateMap,
-    activate: activateMap
+    // activate: activateMap,
+    // mainPinSpike:function(){return {x:sss.x, y:sss.y}};
   };
+  //  var s=window.map.mainPinSpike();
+  //  s.x=1;
 })();

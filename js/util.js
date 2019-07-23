@@ -4,12 +4,12 @@ window.util = (function () {
   var ENTER_KEYCODE = 13;
 
   return {
-    isEscEvent: function (evt, action) {
+    invokeIfEscEvent: function (evt, action) {
       if (evt.keyCode === ESC_KEYCODE) {
         action();
       }
     },
-    isEnterEvent: function (evt, action) {
+    invokeIfEnterEvent: function (evt, action) {
       if (evt.keyCode === ENTER_KEYCODE) {
         action();
       }
