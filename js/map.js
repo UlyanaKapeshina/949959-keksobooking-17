@@ -22,12 +22,6 @@
 
   // фильтрация пинов
 
-  // document.addEventListener('keydown', close);
-  // var close = function (popup) {
-  //   popup.remove();
-  //   document.removeEventListener('keydown', close);
-  // };
-
   var updatePins = function () {
     window.util.removeElements(document.querySelectorAll('.pin'));
     window.util.removeElements(document.querySelectorAll('.map__card'));
@@ -101,7 +95,6 @@
 
   var onEnterPress = function (evt) {
     window.util.invokeIfEnterEvent(evt, activateMap);
-
   };
 
   mainPin.addEventListener('keydown', onEnterPress);
@@ -117,7 +110,6 @@
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
       window.form.setAddress();
-
 
       var shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -137,9 +129,6 @@
       }
       if (mainPinX >= MIN_X && mainPinX <= MAX_X - MAIN_PIN_WIDTH) {
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
-        // var x = mainPin.offsetLeft - shift.x;
-        // mainPin.style.left = x + 'px';
-        // sss.x = x + Math.ceil(MAIN_PIN_WIDTH / 2);
       }
 
     };
@@ -149,7 +138,6 @@
       if (!dragged) {
         upEvt.preventDefault();
         activateMap();
-
       }
 
       document.removeEventListener('mousemove', onMouseMove);
@@ -159,12 +147,8 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-  // var sss={x:0,y:0};
+
   window.map = {
-    deactivate: deactivateMap,
-    // activate: activateMap,
-    // mainPinSpike:function(){return {x:sss.x, y:sss.y}};
+    deactivate: deactivateMap
   };
-  //  var s=window.map.mainPinSpike();
-  //  s.x=1;
 })();

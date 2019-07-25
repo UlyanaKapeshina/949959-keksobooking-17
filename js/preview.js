@@ -21,8 +21,16 @@
 
   // загрузка фоторгафии если формат соответствует
 
-  var createPreview = function (file, preview) {
+  var createPreviewOne = function (file, preview) {
     if (checkFileType(file)) {
+      window.form.avatar = file;
+      readFile(preview, file);
+    }
+  };
+  var createPreviewMultiple = function (file, container, div) {
+    if (checkFileType(file)) {
+      window.form.images.push(file);
+      var preview = renderImg(container, div);
       readFile(preview, file);
     }
   };
@@ -49,7 +57,7 @@
   };
 
   window.preview = {
-    create: createPreview,
-    render: renderImg
+    create: createPreviewOne,
+    createMultiple: createPreviewMultiple
   };
 })();

@@ -55,9 +55,7 @@
 
     data = data.filter(function (ad) {
       return validateNull(ad) && validateNull(ad.offer) && filterTypeOfHousing(ad) && filterRooms(ad) && filterPrice(ad) && filterGuests(ad) && filterFeature(ad);
-
     });
     return data;
   };
-
 })();

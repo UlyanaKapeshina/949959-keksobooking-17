@@ -41,11 +41,6 @@
     var xhr = setRequest(onLoad, onError);
     xhr.open('POST', URL);
     xhr.send(data);
-    var object = {};
-    data.forEach(function (value, key) {
-      object[key] = value;
-    });
-    var json = JSON.stringify(object);
   };
 
   window.backend = {

@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-
   var Rules = {
     '1': ['1'],
     '2': ['1', '2'],
@@ -38,14 +37,8 @@
   var dropboxPhotos = document.querySelector('.ad-form__drop-zone');
   var main = document.querySelector('main');
 
-
-
   // создание адреса метки в поле формы
   var isActive = false;
-  // var canvas = document.getElementById('canvas');
-  // var ctx = canvas.getContext('2d');
-  // ctx.fillStyle = 'black';
-  // ctx.fillRect(0, 0, 100, 130);
 
   var setAddress = function () {
     var pinX = parseInt(mainPin.style.left, 10) + Math.ceil(MAIN_PIN_WIDTH / 2);
@@ -53,7 +46,6 @@
     if (!isActive) {
       pinY = parseInt(mainPin.style.top, 10) + Math.ceil(MAIN_PIN_HEIGHT / 2);
     }
-
     address.value = pinX + ', ' + pinY;
   };
   setAddress();
@@ -87,11 +79,6 @@
       option.selected = guestsQuantities.indexOf(option.value) !== -1;
       option.disabled = guestsQuantities.indexOf(option.value) === -1;
     });
-    // if (guestsQuantities.indexOf(capacitySelect.value) === -1) {
-    //   capacitySelect.setCustomValidity('Выберите другое количество мест');
-    // } else {
-    //   capacitySelect.setCustomValidity('');
-    // }
   };
 
   // загрузка фотографий при нажатии
@@ -115,7 +102,7 @@
 
   var processInputMultiple = function (files) {
     Array.from(files).forEach(function (file) {
-      window.preview.create(file, window.preview.render(container, div));
+      window.preview.createMultiple(file, container, div);
     });
   };
 
@@ -130,6 +117,7 @@
   // активация формы
 
   var getActivate = function () {
+    window.form.images = [];
     removeDisabledAttribute(fieldsetsAndSelects);
     adForm.classList.remove('ad-form--disabled');
     timeInSelect.addEventListener('change', onTimeSelectChange);
@@ -140,12 +128,12 @@
     isActive = true;
     setAddress();
     roomsSelect.addEventListener('change', onRoomsSelectClick);
-    // capacitySelect.addEventListener('change', onRoomsSelectClick);
     typeSelect.addEventListener('change', onTypeSelectChange);
     resetButton.addEventListener('click', onResetFormClick);
     adForm.addEventListener('submit', onSubmitButtonClick);
     window.drop.getActivate(dropboxAvatar);
     window.drop.getActivate(dropboxPhotos);
+    main.addEventListener('keydown', onEnterPress);
   };
 
   // блокирование селектов
@@ -171,15 +159,18 @@
     adForm.removeEventListener('submit', onSubmitButtonClick);
     isActive = false;
     setAddress();
+    roomsSelect.removeEventListener('change', onRoomsSelectClick);
     avatarPreview.src = defaultAvatar;
     window.drop.getDeactivate(dropboxAvatar);
     window.drop.getDeactivate(dropboxPhotos);
+    main.removeEventListener('keydown', onEnterPress);
     container.querySelectorAll('.ad-form__photo').forEach(function (element) {
       element.remove();
     });
   };
 
   // блокирование формы при открытии страницы
+
   getDisabled();
 
   // очистка формы и карты по кнопке reset
@@ -189,6 +180,8 @@
     getDisabled();
     window.map.deactivate();
   };
+
+  // выбор удобств в формах нажатием на enter
 
   var onEnterPress = function (evt) {
     var checkbox = evt.target;
@@ -200,12 +193,18 @@
     });
   };
 
-  main.addEventListener('keydown', onEnterPress);
   // отправка формы объявления
 
   var onSubmitButtonClick = function (evt) {
     evt.preventDefault();
-    window.backend.save(new FormData(adForm), onLoad, window.message.onErrorForm);
+    var formData = new FormData(adForm);
+    formData.delete('images');
+    formData.append('avatar', window.form.avatar);
+    window.form.images.forEach(function (photo) {
+      formData.append('images', photo);
+    });
+    window.backend.save(formData, onLoad, window.message.onErrorForm);
+
   };
 
   // сообщение об успешной отправке формы объявления
@@ -218,21 +217,7 @@
     adForm.reset();
     setAddress();
     getDisabled();
-
-    // закрытие сообщения об успешной отправке
-
-    var onEscPress = function (evt) {
-      window.util.invokeIfEscrEvent(evt, onSuccessMessageClick);
-    };
-
-    var onSuccessMessageClick = function () {
-      main.removeChild(success);
-      document.removeEventListener('click', onSuccessMessageClick);
-      document.removeEventListener('keydown', onEscPress);
-    };
-
-    document.addEventListener('click', onSuccessMessageClick);
-    document.addEventListener('keydown', onEscPress);
+    window.message.onSuccess(success);
   };
 
   window.form = {
@@ -240,6 +225,8 @@
     getActivate: getActivate,
     getDisabled: getDisabled,
     processInputMultiple: processInputMultiple,
-    processInputOne: processInputOne
+    processInputOne: processInputOne,
+    images: [],
+    avatar: null
   };
 })();

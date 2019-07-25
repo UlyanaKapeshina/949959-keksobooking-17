@@ -1,7 +1,6 @@
 'use strict';
 (function () {
 
-
   // закрытие сообщения по нажатию ESC
 
   var onEscPress = function (evt) {
@@ -48,9 +47,26 @@
 
   };
 
-  window.message = {
-    onErrorData: onErrorData,
-    onErrorForm: onErrorForm
+  // закрытие сообщения об успешной отправке формы
+
+  var onSuccessMessage = function (success) {
+    var onSuccessEscPress = function (evt) {
+      window.util.invokeIfEscEvent(evt, onSuccessMessageClick);
+    };
+
+    var onSuccessMessageClick = function () {
+      document.querySelector('main').removeChild(success);
+      document.removeEventListener('click', onSuccessMessageClick);
+      document.removeEventListener('keydown', onSuccessEscPress);
+    };
+
+    document.addEventListener('click', onSuccessMessageClick);
+    document.addEventListener('keydown', onSuccessEscPress);
   };
 
+  window.message = {
+    onErrorData: onErrorData,
+    onErrorForm: onErrorForm,
+    onSuccess: onSuccessMessage
+  };
 })();
