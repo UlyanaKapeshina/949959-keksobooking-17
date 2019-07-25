@@ -41,6 +41,4 @@
     getActivate: getActivateDrop,
     getDeactivate: getDeactivateDrop
   };
-
-
 })();

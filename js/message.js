@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-
   // закрытие сообщения по нажатию ESC
 
   var onEscPress = function (evt) {
@@ -32,7 +31,6 @@
     window.form.setAddress();
   };
 
-
   var onError = function (message) {
     var errorTemplate = document.querySelector('#error').content.querySelector('.error');
     var main = document.querySelector('main');
@@ -44,7 +42,6 @@
     errorButton.addEventListener('click', onErrorCloseClick);
     document.addEventListener('click', onErrorCloseClick);
     document.addEventListener('keydown', onEscPress);
-
   };
 
   // закрытие сообщения об успешной отправке формы

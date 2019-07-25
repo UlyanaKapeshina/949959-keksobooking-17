@@ -204,7 +204,6 @@
       formData.append('images', photo);
     });
     window.backend.save(formData, onLoad, window.message.onErrorForm);
-
   };
 
   // сообщение об успешной отправке формы объявления

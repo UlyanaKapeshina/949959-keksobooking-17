@@ -12,12 +12,10 @@
   var map = document.querySelector('.map');
   var mapFilters = map.querySelector('.map__filters');
   var mainPin = document.querySelector(' .map__pin--main');
-
   var defaultCoords = {
     x: mainPin.style.left,
     y: mainPin.style.top
   };
-
   var ads = [];
 
   // фильтрация пинов
@@ -34,7 +32,7 @@
     var fragment = document.createDocumentFragment();
     data.forEach(function (ad) {
 
-      // при нажатии на пин удаляются открытые карточки;
+      // при нажатии на пин
       // удаляется подсвечивание других пинов;
       // открывается карточка объявления и подсвечивается пин
 

@@ -9,7 +9,6 @@
   var housingRoomsSelect = document.querySelector('#housing-rooms');
   var housingGuestsSelect = document.querySelector('#housing-guests');
 
-
   var getTypePrice = function (price) {
     if (price > MAX_PRICE) {
       return 'high';
